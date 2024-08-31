@@ -7,3 +7,9 @@ export interface BusinessDocument {
   };
   business_id: string;
 }
+
+export interface MatchDocument {
+  id: number;
+  similarity: number;
+  content: string;
+}

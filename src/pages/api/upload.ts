@@ -1,13 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createClient } from '@supabase/supabase-js';
-import OpenAI from 'openai';
 import { chunkText } from '@/utils/chunkText';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { supabase } from '@/lib/supabase';
+import { openai } from '@/lib/openai';
 
 export default async function handler(
   req: NextApiRequest,
