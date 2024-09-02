@@ -488,7 +488,7 @@
                     (a.scrollTop = a.scrollHeight),
                     (e.prev = 11),
                     (e.next = 14),
-                    fetch('https://budachat.com/api/chat', {
+                    fetch('https://www.budachat.com/api/chat', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
