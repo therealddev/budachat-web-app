@@ -3,11 +3,7 @@ import { openai } from '@/lib/openai';
 import { supabase } from '@/lib/supabase';
 import { BusinessDocument, MatchDocument } from '@/types/document';
 
-async function cors(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  next: () => void,
-) {
+async function cors(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -16,70 +12,68 @@ async function cors(
     res.status(200).end();
     return;
   }
-
-  next();
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  await cors(req, res, async () => {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ message: 'Method not allowed' });
-    }
+  await cors(req, res);
 
-    const { businessId, messages } = req.body;
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
 
-    try {
-      // Get embedding for the message
-      const { data: documents, error } = await supabase.rpc('match_documents', {
-        query_embedding: await getEmbedding(
-          messages[messages.length - 1].content,
-        ),
-        match_count: 2, // Always get top 2 documents
-        p_business_id: parseInt(businessId, 10),
-      });
+  const { businessId, messages } = req.body;
 
-      console.log('Full query results:', documents);
-      console.log('Query error:', error);
+  try {
+    // Get embedding for the message
+    const { data: documents, error } = await supabase.rpc('match_documents', {
+      query_embedding: await getEmbedding(
+        messages[messages.length - 1].content,
+      ),
+      match_count: 2, // Always get top 2 documents
+      p_business_id: parseInt(businessId, 10),
+    });
 
-      if (error) throw error;
+    console.log('Full query results:', documents);
+    console.log('Query error:', error);
 
-      // Extract relevant context from Supabase results
-      const context = documents
-        .map((doc: BusinessDocument) => doc.content)
-        .join('\n\n');
+    if (error) throw error;
 
-      console.log('context:', context);
+    // Extract relevant context from Supabase results
+    const context = documents
+      .map((doc: BusinessDocument) => doc.content)
+      .join('\n\n');
 
-      // Prepare messages for OpenAI
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `Be really concise. You are a customer support agent for the business. Use the following information to answer the user's question: ${context}`,
-          },
-          ...messages,
-        ],
-      });
+    console.log('context:', context);
 
-      res.status(200).json({ reply: completion.choices[0].message.content });
+    // Prepare messages for OpenAI
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: `Be really concise. You are a customer support agent for the business. Use the following information to answer the user's question: ${context}`,
+        },
+        ...messages,
+      ],
+    });
 
-      console.log(
-        'Matched documents:',
-        documents.map((doc: MatchDocument) => ({
-          id: doc.id,
-          similarity: doc.similarity,
-          contentPreview: doc.content.substring(0, 50) + '...',
-        })),
-      );
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  });
+    res.status(200).json({ reply: completion.choices[0].message.content });
+
+    console.log(
+      'Matched documents:',
+      documents.map((doc: MatchDocument) => ({
+        id: doc.id,
+        similarity: doc.similarity,
+        contentPreview: doc.content.substring(0, 50) + '...',
+      })),
+    );
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 async function getEmbedding(text: string): Promise<number[]> {
