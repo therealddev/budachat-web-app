@@ -1,16 +1,23 @@
-// _app.js (or _app.tsx)
 import React from 'react';
 import { type AppProps } from 'next/app';
-import RootLayout from '@/app/layout';
-// import { GeistSans } from 'geist/font/sans';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { useState } from 'react';
+import { BusinessProvider } from '../contexts/BusinessContext';
+import '../app/globals.css';
 
-const MyApp: React.FC<AppProps> = ({ Component, pageProps, router }) => {
+const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const [supabaseClient] = useState(() => createClientComponentClient());
+
   return (
-    <>
-      <RootLayout>
+    <SessionContextProvider
+      supabaseClient={supabaseClient}
+      initialSession={pageProps.initialSession}
+    >
+      <BusinessProvider>
         <Component {...pageProps} />
-      </RootLayout>
-    </>
+      </BusinessProvider>
+    </SessionContextProvider>
   );
 };
 
