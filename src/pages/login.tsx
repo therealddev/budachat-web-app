@@ -18,7 +18,7 @@ export default function Login() {
     if (error) {
       setError(error.message);
     } else {
-      router.push('/chat-history');
+      router.push('/dashboard');
     }
   }
 

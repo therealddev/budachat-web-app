@@ -1,0 +1,2 @@
+- This project uses NextJS, supabase
+- we use fetch, not axios
