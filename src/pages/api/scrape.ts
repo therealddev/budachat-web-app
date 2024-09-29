@@ -2,7 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
 
-export const maxDuration = 20; // Extend the timeout to 20 seconds
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+  maxDuration: 60, // Increase to 60 seconds
+};
 
 export default async function handler(
   req: NextApiRequest,
