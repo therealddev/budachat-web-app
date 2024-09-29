@@ -9,4 +9,8 @@
 OPENAI_API_KEY
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
-CHROME_EXECUTABLE_PATH (you can get this going to chrome://version/ on chrome)
+CHROME_EXECUTABLE_PATH
+
+## Notes
+
+- CHROME_EXECUTABLE_PATH is only necessary for dev, you can get it by going to chrome://version/ on chrome (look for "Executable path")
