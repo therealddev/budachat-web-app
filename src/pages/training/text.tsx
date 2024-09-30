@@ -4,7 +4,7 @@ import React from 'react';
 const TextTrainingPage = () => {
   const handleUpload = async (businessId: string, content: string) => {
     try {
-      const response = await fetch('/api/train-chatbot', {
+      const response = await fetch('/api/train-chatbot-with-text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessId, content }),

@@ -72,7 +72,39 @@ const LinkForm: React.FC = () => {
 
   const handleTrainChatbot = async () => {
     console.log('Training chatbot with business ID:', businessId);
-    // The actual training logic will be implemented here
+    setIsLoading(true);
+    setError('');
+
+    try {
+      for (const result of crawlResults) {
+        const response = await fetch('/api/train-chatbot-with-text', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            businessId: businessId,
+            content: result.text,
+            source: result.url,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error(`Failed to process content from ${result.url}`);
+          // Optionally, you might want to break the loop or continue based on your requirements
+        } else {
+          const data = await response.json();
+          console.log(`Processed content from ${result.url}:`, data);
+        }
+      }
+
+      alert('Chatbot training completed successfully!');
+    } catch (err) {
+      console.error('Error training chatbot:', err);
+      setError('An error occurred while training the chatbot');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
