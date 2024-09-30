@@ -15,15 +15,18 @@ export default async function handler(
   if (req.method !== 'POST')
     return res.status(405).json({ message: 'Method not allowed' });
 
-  const { chatbotId, content } = req.body;
+  const { chatbotId, content, source } = req.body;
 
   try {
     const chunks = chunkText(content);
     for (let chunk of chunks) {
       const embedding = await getEmbedding(chunk);
-      await supabase
-        .from('chatbot_trainings')
-        .insert({ chatbot_id: chatbotId, content: chunk, embedding });
+      await supabase.from('chatbot_trainings').insert({
+        chatbot_id: chatbotId,
+        content: chunk,
+        embedding: embedding,
+        source: source,
+      });
     }
 
     res
