@@ -8,7 +8,7 @@ interface CrawlData {
 
 const LinkForm: React.FC = () => {
   const [url, setUrl] = useState('');
-  const [businessId, setBusinessId] = useState('');
+  const [chatbotId, setChatbotId] = useState('');
   const [scrapedData, setScrapedData] = useState<any>(null);
   const [crawlResults, setCrawlResults] = useState<CrawlData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +71,7 @@ const LinkForm: React.FC = () => {
   };
 
   const handleTrainChatbot = async () => {
-    console.log('Training chatbot with business ID:', businessId);
+    console.log('Training chatbot with chatbot ID:', chatbotId);
     setIsLoading(true);
     setError('');
 
@@ -83,7 +83,7 @@ const LinkForm: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            businessId: businessId,
+            chatbotId: chatbotId,
             content: result.text,
             source: result.url,
           }),
@@ -153,14 +153,14 @@ const LinkForm: React.FC = () => {
       <div className="mt-4">
         <input
           type="text"
-          value={businessId}
-          onChange={(e) => setBusinessId(e.target.value)}
-          placeholder="Enter Business ID"
+          value={chatbotId}
+          onChange={(e) => setChatbotId(e.target.value)}
+          placeholder="Enter Chatbot ID"
           className="mr-2 p-2 border rounded"
         />
         <button
           onClick={handleTrainChatbot}
-          disabled={!businessId || crawlResults.length === 0}
+          disabled={!chatbotId || crawlResults.length === 0}
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Train Chatbot
