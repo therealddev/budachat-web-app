@@ -1,3 +1,7 @@
+// crawl a website, get links
+// scrape all the links
+// return that
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';

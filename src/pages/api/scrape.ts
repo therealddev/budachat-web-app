@@ -1,3 +1,7 @@
+// This file recieves a url
+// Scrapes the url for text and links
+// IMPORTANT: Might get deprecated soon for "crawl.ts"
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';

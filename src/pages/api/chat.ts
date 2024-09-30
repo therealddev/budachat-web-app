@@ -1,3 +1,6 @@
+// endpoint for the widget (another domain)
+// generate a chat response for a customer query
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { openai } from '@/lib/openai';
 import { supabase } from '@/lib/supabase';

@@ -1,3 +1,6 @@
+// endpoint for the widget (another domain)
+// gets the business info (name, logo, color)
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 

@@ -1,3 +1,8 @@
+// This file recieves a text
+// If text is too long, it chunks it
+// Then it creates an embedding for each chunk
+// Finally, saves to database
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { chunkText } from '@/utils/chunkText';
 import { supabase } from '@/lib/supabase';

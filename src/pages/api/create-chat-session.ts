@@ -1,3 +1,5 @@
+// endpoint for the widget (another domain)
+
 import { createClient } from '@supabase/supabase-js';
 import { NextApiRequest, NextApiResponse } from 'next';
 

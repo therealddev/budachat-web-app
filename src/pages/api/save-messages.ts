@@ -1,3 +1,6 @@
+// endpoint for the widget (another domain)
+// save messages to the database
+
 import { createClient } from '@supabase/supabase-js';
 import { NextApiRequest, NextApiResponse } from 'next';
 
