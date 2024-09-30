@@ -8,11 +8,12 @@ interface CrawlData {
 
 const LinkForm: React.FC = () => {
   const [url, setUrl] = useState('');
+  const [businessId, setBusinessId] = useState('');
   const [scrapedData, setScrapedData] = useState<any>(null);
   const [crawlResults, setCrawlResults] = useState<CrawlData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isCrawl, setIsCrawl] = useState(false);
+  const [isCrawl, setIsCrawl] = useState(true); // Set to true by default
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +70,11 @@ const LinkForm: React.FC = () => {
     );
   };
 
+  const handleTrainChatbot = async () => {
+    console.log('Training chatbot with business ID:', businessId);
+    // The actual training logic will be implemented here
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit} className="mb-4">
@@ -112,6 +118,22 @@ const LinkForm: React.FC = () => {
           </pre>
         </div>
       )}
+      <div className="mt-4">
+        <input
+          type="text"
+          value={businessId}
+          onChange={(e) => setBusinessId(e.target.value)}
+          placeholder="Enter Business ID"
+          className="mr-2 p-2 border rounded"
+        />
+        <button
+          onClick={handleTrainChatbot}
+          disabled={!businessId || crawlResults.length === 0}
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Train Chatbot
+        </button>
+      </div>
     </div>
   );
 };
