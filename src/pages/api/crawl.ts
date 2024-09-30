@@ -121,7 +121,7 @@ export default async function handler(
     const results: PageData[] = [];
     const visited = new Set<string>();
     const queue: string[] = [url]; // Use the original URL here
-    const maxPages = 7; // Limit to 3 pages
+    const maxPages = 3; // Limit to 3 pages
 
     while (queue.length > 0 && results.length < maxPages) {
       const currentUrl = queue.shift();
