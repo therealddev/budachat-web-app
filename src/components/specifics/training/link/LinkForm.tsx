@@ -20,8 +20,12 @@ const LinkForm: React.FC = () => {
     setError('');
     setScrapedData(null);
 
+    console.log(`Submitting form: URL = ${url}, isCrawl = ${isCrawl}`);
+
     try {
       const endpoint = isCrawl ? '/api/crawl' : '/api/scrape';
+      console.log(`Fetching from endpoint: ${endpoint}`);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -37,21 +41,32 @@ const LinkForm: React.FC = () => {
       }
 
       const data = await response.json();
+      console.log('Received data:', data);
+
       if (isCrawl) {
         setCrawlResults(data);
+        console.log('Updated crawl results:', data);
       } else {
         setScrapedData(data);
+        console.log('Updated scraped data:', data);
       }
     } catch (err) {
-      setError(
-        `An error occurred while ${
-          isCrawl ? 'crawling' : 'scraping'
-        } the webpage`,
-      );
-      console.error(err);
+      const errorMessage = `An error occurred while ${
+        isCrawl ? 'crawling' : 'scraping'
+      } the webpage`;
+      setError(errorMessage);
+      console.error(errorMessage, err);
     } finally {
       setIsLoading(false);
+      console.log('Request completed, loading set to false');
     }
+  };
+
+  const handleDeleteCrawlResult = (urlToDelete: string) => {
+    console.log(`Deleting crawl result for ${urlToDelete}`);
+    setCrawlResults((prevResults) =>
+      prevResults.filter((result) => result.url !== urlToDelete),
+    );
   };
 
   return (
@@ -83,7 +98,12 @@ const LinkForm: React.FC = () => {
         </button>
       </form>
       {error && <p className="error text-red-500">{error}</p>}
-      {isCrawl && <CrawlResults crawlResults={crawlResults} />}
+      {isCrawl && (
+        <CrawlResults
+          crawlResults={crawlResults}
+          onDelete={handleDeleteCrawlResult}
+        />
+      )}
       {!isCrawl && scrapedData && (
         <div>
           <h3 className="text-xl font-bold mb-2">Scraped Content:</h3>
