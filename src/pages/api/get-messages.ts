@@ -1,3 +1,9 @@
+// this gets all the chat sessions and all the messages for a business
+// we probably should delete this.
+//
+// what we should actually do is get all the chat sessions, and
+// if someone clicks on one, get the chat history for that session
+
 import { createClient } from '@supabase/supabase-js';
 import { NextApiRequest, NextApiResponse } from 'next';
 

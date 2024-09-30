@@ -2,12 +2,16 @@ import TextForm from '@/components/specifics/training/text/TextForm';
 import React from 'react';
 
 const TextTrainingPage = () => {
-  const handleUpload = async (businessId: string, content: string) => {
+  const handleUpload = async (chatbotId: string, content: string) => {
     try {
-      const response = await fetch('/api/upload', {
+      const response = await fetch('/api/train-chatbot-with-text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ businessId, content }),
+        body: JSON.stringify({
+          chatbotId: chatbotId,
+          content: content,
+          source: 'custom-text',
+        }),
       });
 
       if (!response.ok) {

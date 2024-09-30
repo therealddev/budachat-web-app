@@ -1,21 +1,21 @@
 import { useState } from 'react';
 
 interface TextFormProps {
-  onSubmit: (businessId: string, content: string) => Promise<void>;
+  onSubmit: (chatbotId: string, content: string) => Promise<void>;
 }
 
 export default function TextForm({ onSubmit }: TextFormProps) {
-  const [businessId, setBusinessId] = useState('');
+  const [chatbotId, setChatbotId] = useState('');
   const [content, setContent] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await onSubmit(businessId, content);
+      await onSubmit(chatbotId, content);
       setMessage('Document uploaded successfully');
       // Optionally clear the form
-      setBusinessId('');
+      setChatbotId('');
       setContent('');
     } catch (error) {
       setMessage('Error uploading document');
@@ -27,9 +27,9 @@ export default function TextForm({ onSubmit }: TextFormProps) {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          value={businessId}
-          onChange={(e) => setBusinessId(e.target.value)}
-          placeholder="Business ID"
+          value={chatbotId}
+          onChange={(e) => setChatbotId(e.target.value)}
+          placeholder="Chatbot ID"
           required
         />
         <textarea

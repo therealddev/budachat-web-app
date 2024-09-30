@@ -1,6 +1,11 @@
+// This file recieves a url
+// Scrapes the url for text and links
+// IMPORTANT: Might get deprecated soon for "crawl.ts"
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
+import { TimeoutError } from 'puppeteer-core';
 
 export const config = {
   api: {
@@ -8,7 +13,7 @@ export const config = {
       sizeLimit: '10mb',
     },
   },
-  maxDuration: 60, // Increase to 60 seconds
+  maxDuration: 60, // 60 seconds timeout
 };
 
 export default async function handler(
@@ -41,27 +46,32 @@ export default async function handler(
     });
 
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.goto(url, {
+      waitUntil: 'networkidle0',
+      timeout: 30000, // 30 seconds timeout
+    });
 
     // Extract page title
     const pageTitle = await page.title();
 
-    // Extract text content
-    const text = await page.evaluate(() => {
-      return document.body.innerText;
+    // Extract text content and links
+    const { text, links } = await page.evaluate(() => {
+      const text = document.body.innerText;
+      const links = Array.from(document.querySelectorAll('a')).map((link) => ({
+        href: link.href,
+        text: link.textContent?.trim() || '',
+      }));
+      return { text, links };
     });
 
-    // Take a screenshot
-    const screenshot = await page.screenshot();
-    // Note: You would typically upload this screenshot to a service like Cloudinary
-    // and return the URL instead of the raw data
-
-    res
-      .status(200)
-      .json({ pageTitle, text, screenshot: screenshot.toString('base64') });
+    res.status(200).json({ pageTitle, text, links });
   } catch (error) {
     console.error('Error scraping webpage:', error);
-    res.status(500).json({ message: 'Error scraping webpage' });
+    if (error instanceof TimeoutError) {
+      res.status(504).json({ message: 'Timeout while scraping webpage' });
+    } else {
+      res.status(500).json({ message: 'Error scraping webpage' });
+    }
   } finally {
     if (browser !== null) {
       await browser.close();
