@@ -2,6 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
 
+// Add this line to import the Page type
+import { Page } from 'puppeteer-core';
+
 interface PageData {
   url: string;
   pageTitle: string;
@@ -18,10 +21,7 @@ export const config = {
   maxDuration: 60, // 60 seconds timeout
 };
 
-async function scrapePage(
-  page: puppeteer.Page,
-  url: string,
-): Promise<PageData> {
+async function scrapePage(page: Page, url: string): Promise<PageData> {
   console.log(`Scraping page: ${url}`);
   await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
 
